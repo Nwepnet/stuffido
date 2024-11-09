@@ -1,25 +1,5 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt",true))()
--- Right Arm (Cyan color)
-local fx7Right = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7Right.Parent = game.Players.LocalPlayer.Character["Right Arm"]
-for _, child in ipairs(fx7Right:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(1) -- Emit 1 particle
-    end
-end
 
-task.wait(0.1)
-
--- Left Arm (Cyan color)
-local fx7Left = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].ArmFX:Clone()
-fx7Left.Parent = game.Players.LocalPlayer.Character["Left Arm"]
-for _, child in ipairs(fx7Left:GetChildren()) do
-    if child:IsA("ParticleEmitter") then
-        child.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set color to cyan
-        child:Emit(1) -- Emit 1 particle
-    end
-end
 local tool = Instance.new("Tool")
 tool.Name = "Infinite Void" --put your tool name here
 
