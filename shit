@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt",true))()
+
 
 local tool = Instance.new("Tool")
 tool.Name = "Infinite Void" --put your tool name here
@@ -151,3 +151,4 @@ game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
 end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt",true))()
