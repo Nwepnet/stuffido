@@ -121,4 +121,3 @@ monitorHealth()
 
 -- Auto-execute loadstring on respawn
 autoExecuteLoadstringOnRespawn()
-end
