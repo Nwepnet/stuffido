@@ -1,62 +1,124 @@
+getgenv().Time = 0.5
 
+getgenv().Head = {
+    8484756013,
+    8484756013,
+}
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local deathPosition = nil
-local animationId = "rbxassetid://13736115009"
+getgenv().Torso = {
+    8484756013,
+    8484758961, -- Extra ID added for Torso
+}
 
-local function stopAllAnimations(humanoid)
-    local animationTracks = humanoid:GetPlayingAnimationTracks()
-    for _, track in ipairs(animationTracks) do
-        track:Stop()
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
 
-local red4 = game.ReplicatedStorage.Resources.FiveSeasonsFX["CharFX"].EyeEmit:Clone()
-red4.Parent = game.Players.LocalPlayer.Character["Head"]
-    for _, child in ipairs(red4:GetChildren()) do
-        if child:IsA("ParticleEmitter") then -- Check if the child is a ParticleEmitter
-child.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255)) -- Set color to green
-            child:Emit(20) -- Emit 20 particles
-                
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
         end
-        end
-                
     end
 end
 
-local function onCharacterAdded(character)
-    local humanoid = character:WaitForChild("Humanoid")
-    
-    if deathPosition then
-        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(deathPosition)
-        stopAllAnimations(humanoid)
-        task.wait()
-        local animation = Instance.new("Animation")
-        animation.AnimationId = animationId
-        local animationTrack = humanoid:LoadAnimation(animation)
-        animationTrack:Play()
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
 
-        
-        wait(2)
+    accessory.Parent = game.Workspace
 
-        
-
-        task.wait(1)
-        animationTrack:Stop()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidishit/refs/heads/main/shit",true))()
-        deathPosition = nil  
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        handle.CanCollide = false
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            local parent = character:FindFirstChild(parentPart.Name)
+            if parent then
+                local attachmentPoint = accessory.AttachmentPoint
+                weldParts(parent, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            end
+        end
     end
 
-    humanoid.HealthChanged:Connect(function(health)
-        if health <= 0 then
+    accessory.Parent = game.Players.LocalPlayer.Character
+end
 
-            deathPosition = character:WaitForChild("HumanoidRootPart").Position
+local function onCharacterAdded(character)
+    wait(getgenv().Time)
+
+    for _, accessoryId in ipairs(getgenv().Head) do
+        addAccessoryToCharacter(accessoryId, character.Head)
+    end
+
+    for _, accessoryId in ipairs(getgenv().Torso) do
+        addAccessoryToCharacter(accessoryId, character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
+    end
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+if game.Players.LocalPlayer.Character then
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
+
+-- Function to auto-execute loadstring on respawn
+local function autoExecuteLoadstringOnRespawn()
+    game.Players.LocalPlayer.CharacterAdded:Connect(function()
+        wait(0.8) -- Wait for character to fully load
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
+    end)
+end
+
+-- Health Check with accessory loading and limit (6 minutes)
+local healthCheckInProgress = false
+
+local function monitorHealth()
+    local player = game.Players.LocalPlayer
+    local lastHealth = player.Character and player.Character.Humanoid.Health or 100
+
+    game:GetService("RunService").Heartbeat:Connect(function()
+        local currentHealth = player.Character and player.Character.Humanoid.Health or 100
+        if currentHealth == 0 and not healthCheckInProgress then
+            healthCheckInProgress = true
+            local startTime = tick()
+            local endTime = startTime + 360 -- 6 minutes (360 seconds)
+            
+            -- Spam accessory load every 0.8 seconds until 6 minutes are reached
+            while tick() < endTime do
+                if player.Character and player.Character.Humanoid.Health == 0 then
+                    for _, accessoryId in ipairs(getgenv().Head) do
+                        addAccessoryToCharacter(accessoryId, player.Character.Head)
+                    end
+                    for _, accessoryId in ipairs(getgenv().Torso) do
+                        addAccessoryToCharacter(accessoryId, player.Character:FindFirstChild("UpperTorso") or player.Character:FindFirstChild("Torso"))
+                    end
+                end
+                wait(0.8) -- Execute every 0.8 seconds
+                if player.Character and player.Character.Humanoid.Health > 0 then
+                    break
+                end
+            end
+            -- After 6 minutes, execute the loadstring
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
+            healthCheckInProgress = false
         end
     end)
 end
 
-player.CharacterAdded:Connect(onCharacterAdded)
+monitorHealth()
 
-if player.Character then
-    onCharacterAdded(player.Character)
+-- Auto-execute loadstring on respawn
+autoExecuteLoadstringOnRespawn()
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidishit/refs/heads/main/shit",true))()
