@@ -1,14 +1,22 @@
-getgenv().Time = 1
+getgenv().Time = 0.2
 
 getgenv().Head = {
-    17373335121,
-    17373335121,
+    15897458595, -- Hat accessory ID (added to head)
 }
 
 getgenv().Torso = {
-    17373335121,
-    17375874574, -- Extra ID added for Torso
+    18972847998, -- Torso accessory ID
 }
+
+getgenv().RightArm = {
+    18972861651  -- Right Arm accessory ID
+}
+
+getgenv().LeftArm = {
+    18972855219  -- Left Arm accessory ID
+}
+
+local lastDeathPosition = nil
 
 local function weldParts(part0, part1, c0, c1)
     local weld = Instance.new("Weld")
@@ -44,32 +52,104 @@ local function addAccessoryToCharacter(accessoryId, parentPart)
                 weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
             end
         else
-            local parent = character:FindFirstChild(parentPart.Name)
-            if parent then
-                local attachmentPoint = accessory.AttachmentPoint
-                weldParts(parent, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            local attachmentPoint = accessory:FindFirstChild("AttachmentPoint")
+            if attachmentPoint then
+                weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
             end
         end
     end
 
-    accessory.Parent = game.Players.LocalPlayer.Character
+    accessory.Parent = character
+end
+
+local function loadAccessories(character)
+    -- Load accessories repeatedly
+    for _, accessoryId in ipairs(getgenv().Head) do
+        addAccessoryToCharacter(accessoryId, character:FindFirstChild("Head"))
+    end
+
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+
+    local rightArm = character:FindFirstChild("RightUpperArm") or character:FindFirstChild("Right Arm")
+    if rightArm then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArm)
+        end
+    end
+
+    local leftArm = character:FindFirstChild("LeftUpperArm") or character:FindFirstChild("Left Arm")
+    if leftArm then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArm)
+        end
+    end
 end
 
 local function onCharacterAdded(character)
     wait(getgenv().Time)
 
-    for _, accessoryId in ipairs(getgenv().Head) do
-        addAccessoryToCharacter(accessoryId, character.Head)
-    end
+    -- Infinite loop with very high iteration count
+    for i = 1, 1e9 do
+        -- Load accessories on spawn and on respawn
+        loadAccessories(character)
 
-    for _, accessoryId in ipairs(getgenv().Torso) do
-        addAccessoryToCharacter(accessoryId, character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
+        -- Ensure the external script is loaded after applying accessories
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nova2ezz/Sukuna/refs/heads/main/KenjakuTsbOnYt"))()
+
+        -- Clothing setup
+        local char = game.Players.LocalPlayer.Character
+
+        pcall(function() char.Pants:Destroy() end)
+        local v = Instance.new("Pants")
+        v.Parent = char
+        v.PantsTemplate = 'rbxassetid://15861071043'
+        v.Name = 'Pants'
+        pcall(function() char.Shirt:Destroy() end)
+        local v = Instance.new("Shirt")
+        v.Parent = char
+        v.ShirtTemplate = 'rbxassetid://15850640147'
+        v.Name = 'Shirt'
+        pcall(function() char['Shirt Graphic']:Destroy() end)
+        local v = Instance.new("ShirtGraphic")
+        v.Graphic = 'rbxassetid://15850640147'
+        v.Name = 'Shirt Graphic'
+
+        wait(getgenv().Time) -- delay before next load
     end
 end
 
-game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+-- Function to record last death position
+local function onCharacterDied()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            lastDeathPosition = humanoidRootPart.Position
+        end
+    end
+end
 
+-- Override spawn location after respawn
+local function onPlayerRespawn(character)
+    if lastDeathPosition then
+        character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
+    end
+    onCharacterAdded(character)
+end
+
+-- Connect the events
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+    onPlayerRespawn(character)
+end)
+
+-- Initial load if character exists
 if game.Players.LocalPlayer.Character then
+    game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
     onCharacterAdded(game.Players.LocalPlayer.Character)
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/Megunatsb", true))()
