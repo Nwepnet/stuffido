@@ -1,0 +1,135 @@
+getgenv().Time = 0.4
+
+getgenv().Head = {
+    15897458595, -- Hat accessory ID (added to head)
+    17373335121, -- Extra Head ID
+}
+
+getgenv().Torso = {
+    18972847998, -- Torso accessory ID
+    17373335121,
+    17375874574, -- Extra ID added for Torso
+}
+
+getgenv().RightArm = {
+    18972861651  -- Right Arm accessory ID
+}
+
+getgenv().LeftArm = {
+    18972855219  -- Left Arm accessory ID
+}
+
+local lastDeathPosition = nil
+
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
+
+    accessory.Parent = game.Workspace
+
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        handle.CanCollide = false
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            local attachmentPoint = accessory:FindFirstChild("AttachmentPoint")
+            if attachmentPoint then
+                weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            end
+        end
+    end
+
+    accessory.Parent = character
+end
+
+local function loadAccessories(character)
+    -- Load accessories repeatedly
+    for _, accessoryId in ipairs(getgenv().Head) do
+        addAccessoryToCharacter(accessoryId, character:FindFirstChild("Head"))
+    end
+
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+
+    local rightArm = character:FindFirstChild("RightUpperArm") or character:FindFirstChild("Right Arm")
+    if rightArm then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArm)
+        end
+    end
+
+    local leftArm = character:FindFirstChild("LeftUpperArm") or character:FindFirstChild("Left Arm")
+    if leftArm then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArm)
+        end
+    end
+end
+
+local function onCharacterAdded(character)
+    wait(getgenv().Time)
+
+    -- Load accessories on spawn and on respawn
+    loadAccessories(character)
+
+    -- Ensure the external script is loaded after applying accessories
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Nova2ezz/Sukuna/refs/heads/main/KenjakuTsbOnYt"))()
+end
+
+-- Function to record last death position
+local function onCharacterDied()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            lastDeathPosition = humanoidRootPart.Position
+        end
+    end
+end
+
+-- Override spawn location after respawn
+local function onPlayerRespawn(character)
+    if lastDeathPosition then
+        character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
+    end
+    onCharacterAdded(character)
+end
+
+-- Connect the events
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+    onPlayerRespawn(character)
+end)
+
+-- Initial load if character exists
+if game.Players.LocalPlayer.Character then
+    game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
