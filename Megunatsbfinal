@@ -98,12 +98,12 @@ local function onCharacterAdded(character)
     -- Call loadstring once per respawn
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Nova2ezz/Sukuna/refs/heads/main/KenjakuTsbOnYt"))()
     
-    -- Load accessories and clothing for 5 seconds on respawn
-    local endTime = tick() + 5
+    -- Load accessories and clothing every second for 6 seconds on respawn
+    local endTime = tick() + 6
     while tick() < endTime do
         loadAccessories(character)
         loadClothing()
-        wait(0.5) -- Delay between accessory and clothing applications within the 5-second period
+        wait(1) -- Delay between accessory and clothing applications within the 6-second period
     end
 end
 
