@@ -3,7 +3,7 @@ getgenv().Time = 0.3  -- Set the time to 0.3
 
 -- Define accessory IDs for the head and torso
 getgenv().Head = { 8484756013, 8484756013 }
-getgenv().Torso = { 8484756013, 8484758961 }
+getgenv().Torso = { 14896061103, 14896037501 }
 
 local lastDeathPosition = nil  -- Store last death position
 
