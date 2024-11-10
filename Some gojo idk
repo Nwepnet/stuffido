@@ -55,7 +55,7 @@ local function addAccessoryToCharacter(accessoryId, parentPart)
     accessory.Parent = game.Players.LocalPlayer.Character
 end
 
--- Function to execute the loadstring once per cooldown period
+-- Function to execute the loadstring only once per cooldown period
 local function executeLoadstringOnce()
     local currentTime = tick()
     if currentTime - _G.lastLoadStringTime >= _G.loadStringCooldown then
@@ -107,6 +107,8 @@ end
 
 -- Connect the onCharacterAdded function to respawn events
 game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+-- If the character is already loaded, trigger the respawn handler immediately
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
 end
