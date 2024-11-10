@@ -1,4 +1,4 @@
-getgenv().Time = 0.4
+getgenv().Time = 0.15
 
 getgenv().Head = {
     15897458595, -- Hat accessory ID (added to head)
