@@ -1,17 +1,21 @@
--- Set global time for accessory loading
-getgenv().Time = 0.3  -- Set the time to 0.3
+getgenv().Time = 0.5
 
--- Define accessory IDs for the head and torso
-getgenv().Head = { 8484756013, 8484756013 }
-getgenv().Torso = { 14896061103, 14896037501 }
+getgenv().Torso = {
+    13725666126
+}
 
-local lastDeathPosition = nil  -- Store last death position
+getgenv().RightArm = {
+   18772894136
+}
+getgenv().LeftArm = {
+   18772884855
+}
 
--- Anti-double execution setup for loadstring
-_G.loadStringCooldown = 5 -- seconds
-_G.lastLoadStringTime = 0
+getgenv().Head = {
+   15897458595
+}
 
--- Function to weld parts together for accessories
+-- Function to weld parts
 local function weldParts(part0, part1, c0, c1)
     local weld = Instance.new("Weld")
     weld.Part0 = part0
@@ -22,7 +26,7 @@ local function weldParts(part0, part1, c0, c1)
     return weld
 end
 
--- Function to find an attachment in the part's descendants
+-- Find attachment function
 local function findAttachment(rootPart, name)
     for _, descendant in pairs(rootPart:GetDescendants()) do
         if descendant:IsA("Attachment") and descendant.Name == name then
@@ -31,87 +35,172 @@ local function findAttachment(rootPart, name)
     end
 end
 
--- Function to add accessories to the character
+-- Add accessory function
 local function addAccessoryToCharacter(accessoryId, parentPart)
-    -- Load the accessory from the asset ID
     local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
+
     accessory.Parent = game.Workspace
 
-    -- Find the handle of the accessory and ensure it's colliding
     local handle = accessory:FindFirstChild("Handle")
     if handle then
         handle.CanCollide = false
-        -- Check if there's an attachment and weld it
         local attachment = handle:FindFirstChildOfClass("Attachment")
         if attachment then
             local parentAttachment = findAttachment(parentPart, attachment.Name)
             if parentAttachment then
                 weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
             end
+        else
+            local attachmentPoint = accessory:FindFirstChild("AttachmentPoint")
+            if attachmentPoint then
+                weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            end
         end
     end
 
-    -- Parent the accessory back to the character
-    accessory.Parent = game.Players.LocalPlayer.Character
+    accessory.Parent = character
 end
 
--- Function to execute the loadstring only once per cooldown period
-local function executeLoadstringOnce()
-    local currentTime = tick()
-    if currentTime - _G.lastLoadStringTime >= _G.loadStringCooldown then
-        _G.lastLoadStringTime = currentTime
-        -- Load and execute the external script from the URL
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
-    end
-end
-
--- Function executed when the player's character respawns
+-- Adding accessories when character is added
 local function onCharacterAdded(character)
-    wait(getgenv().Time)  -- Wait for a short time before starting the accessory spam
+    wait(getgenv().Time)
 
-    -- Start accessory spam loop in a separate thread to avoid blocking the rest of the code
-    spawn(function()
-        while true do
-            -- Add head accessories
-            for _, accessoryId in ipairs(getgenv().Head) do
-                addAccessoryToCharacter(accessoryId, character.Head)
-            end
-
-            -- Add torso accessories
-            for _, accessoryId in ipairs(getgenv().Torso) do
-                addAccessoryToCharacter(accessoryId, character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
-            end
-
-            wait(0.5)  -- Wait for 0.5 seconds before adding accessories again
+    -- Head accessory
+    local headPart = character:FindFirstChild("Head")
+    if headPart then
+        for _, accessoryId in ipairs(getgenv().Head) do
+            addAccessoryToCharacter(accessoryId, headPart)
         end
-    end)
-
-    -- Set death position if available
-    if lastDeathPosition then
-        character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
     end
 
-    -- Wait 3 seconds before executing the loadstring
-    wait(3)
-    executeLoadstringOnce()  -- Execute the loadstring after waiting 3 seconds
-end
+    -- Torso accessory
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
 
--- Function to store the last death position
-local function onPlayerDied()
-    local character = game.Players.LocalPlayer.Character
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        -- Save the death position when the player dies
-        lastDeathPosition = character.HumanoidRootPart.Position
+    -- Left arm accessory
+    local leftArmPart = character:FindFirstChild("LeftArm")
+    if leftArmPart then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArmPart)
+        end
+    end
+
+    -- Right arm accessory
+    local rightArmPart = character:FindFirstChild("RightArm")
+    if rightArmPart then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArmPart)
+        end
     end
 end
 
--- Connect the onCharacterAdded function to respawn events
 game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 
--- If the character is already loaded, trigger the respawn handler immediately
 if game.Players.LocalPlayer.Character then
     onCharacterAdded(game.Players.LocalPlayer.Character)
 end
 
--- Listen for player death to record position
-game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(onPlayerDied)
+-- Tool Setup
+loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/main/Latest.lua"))()
+
+local char = game.Players.LocalPlayer.Character
+
+-- Pants setup
+pcall(function() char.Pants:Destroy() end)
+local pants = Instance.new("Pants")
+pants.Parent = char
+pants.PantsTemplate = 'rbxassetid://6996040570'
+pants.Name = 'Pants'
+
+-- Shirt setup
+pcall(function() char.Shirt:Destroy() end)
+local shirt = Instance.new("Shirt")
+shirt.Parent = char
+shirt.ShirtTemplate = 'rbxassetid://6996023673'
+shirt.Name = 'Shirt'
+
+-- Shirt Graphic setup
+pcall(function() char['Shirt Graphic']:Destroy() end)
+local shirtGraphic = Instance.new("ShirtGraphic")
+shirtGraphic.Graphic = 'rbxassetid://6996023673'
+shirtGraphic.Name = 'Shirt Graphic'
+
+-- Tool setup
+local tool = Instance.new("Tool")
+tool.Name = "Infinite Void" -- Tool name
+
+local handle = Instance.new("Part")
+handle.Name = "Handle"
+handle.Transparency = 1
+handle.CanCollide = false
+handle.Parent = tool
+
+local soundId = "rbxassetid://your_sound_id_here" -- Replace with your tool sound ID
+local sound = Instance.new("Sound")
+sound.SoundId = soundId
+sound.Parent = tool
+
+local animationId = "rbxassetid://18459178353" -- Replace with your animation ID
+local assetId = 17352290656 -- Effect asset ID
+local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
+local effectSoundId = "rbxassetid://6667923288" -- Effect sound ID
+local effectSound = Instance.new("Sound")
+effectSound.SoundId = effectSoundId
+effectSound.Parent = game.Workspace
+
+-- Function to equip the tool
+local function onEquipped()
+    local character = game.Players.LocalPlayer.Character
+    if character then
+        local humanoid = character:WaitForChild("Humanoid")
+        local rootPart = character:WaitForChild("HumanoidRootPart")
+
+        rootPart.Anchored = false
+
+        local animation = Instance.new("Animation")
+        animation.AnimationId = animationId
+        local animationTrack = humanoid:LoadAnimation(animation)
+        animationTrack:Play()
+
+        sound:Play()
+
+        -- Play effect when tool is used
+        if effect then
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
+            if torso then
+                effect.Parent = torso
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
+                effectSound:Play()
+
+                wait(60)
+                effect:Destroy()
+            end
+        end
+
+        tool.Unequipped:Connect(function()
+            print("Void")
+        end)
+    end
+end
+
+-- Reload the tool if it is destroyed
+local function reloadTool()
+    tool.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            wait(0.5)
+            tool.Parent = game.Players.LocalPlayer.Backpack
+        end
+    end)
+end
+
+tool.Equipped:Connect(onEquipped)
+
+-- Start by reloading the tool
+reloadTool()
+
+tool.Parent = game.Players.LocalPlayer.Backpack
