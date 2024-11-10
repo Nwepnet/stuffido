@@ -1,43 +1,24 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt",true))()
+
 local char = game.Players.LocalPlayer.Character
 
--- Remove existing pants and add new pants
 pcall(function() char.Pants:Destroy() end)
-local pants = Instance.new("Pants")
-pants.Parent = char
-pants.PantsTemplate = 'rbxassetid://8484758961' -- Pants ID from your request
-pants.Name = 'Pants'
-
--- Remove existing shirt and add new shirt
+local v = Instance.new("Pants")
+v.Parent = char
+v.PantsTemplate = 'rbxassetid://14896060989'
+v.Name = 'Pants'
 pcall(function() char.Shirt:Destroy() end)
-local shirt = Instance.new("Shirt")
-shirt.Parent = char
-shirt.ShirtTemplate = 'rbxassetid://8484756013' -- Shirt ID from your request
-shirt.Name = 'Shirt'
-
--- Remove existing shirt graphic and add new one
+local v = Instance.new("Shirt")
+v.Parent = char
+v.ShirtTemplate = 'rbxassetid://14896037485'
+v.Name = 'Shirt'
 pcall(function() char['Shirt Graphic']:Destroy() end)
-local shirtGraphic = Instance.new("ShirtGraphic")
-shirtGraphic.Graphic = 'rbxassetid://8484756013' -- Shirt Graphic ID from your request
-shirtGraphic.Name = 'Shirt Graphic'
+local v = Instance.new("ShirtGraphic")
+v.Graphic = 'rbxassetid://14896037485'
+v.Name = 'Shirt Graphic'
 
--- Set accessories for torso and arms
-pcall(function() char.Torso.Accessories:Destroy() end)
-local accessoryTorso = Instance.new("Accessory")
-accessoryTorso.Parent = char.Torso
-accessoryTorso.AccessoryId = 'rbxassetid://18358049104' -- Torso accessory ID
-
-local accessoryRightArm = Instance.new("Accessory")
-accessoryRightArm.Parent = char['Right Arm']
-accessoryRightArm.AccessoryId = 'rbxassetid://18358060720' -- Right arm accessory ID
-
-local accessoryLeftArm = Instance.new("Accessory")
-accessoryLeftArm.Parent = char['Left Arm']
-accessoryLeftArm.AccessoryId = 'rbxassetid://18358152336' -- Left arm accessory ID
-
--- Tool setup
 local tool = Instance.new("Tool")
-tool.Name = "Infinite Void"
+tool.Name = "Infinite Void" --put your tool name here
 
 local handle = Instance.new("Part")
 handle.Name = "Handle"
@@ -45,15 +26,15 @@ handle.Transparency = 1
 handle.CanCollide = false
 handle.Parent = tool
 
-local soundId = "rbxassetid://your_sound_id_here" -- Replace with your sound ID
+local soundId = "rbxassetid://your_sound_id_here" --put a sound here (needs to be a sound by tsb)
 local sound = Instance.new("Sound")
 sound.SoundId = soundId
 sound.Parent = tool
 
-local animationId = "rbxassetid://18459178353" -- Tool animation ID
-local assetId = 17352290656 -- Effect Asset ID
+local animationId = "rbxassetid://18459178353" --put your tool anim in here
+local assetId = 17352290656 -- Replace with the actual Asset ID for the effect
 local effect = game:GetObjects("rbxassetid://" .. assetId)[1]
-local effectSoundId = "rbxassetid://6667923288" -- Effect sound ID
+local effectSoundId = "rbxassetid://6667923288" -- Replace with the actual ID of the sound you want to play for the effect
 local effectSound = Instance.new("Sound")
 effectSound.SoundId = effectSoundId
 effectSound.Parent = game.Workspace
@@ -65,27 +46,27 @@ local function onEquipped()
         local humanoid = character:WaitForChild("Humanoid")
         local rootPart = character:WaitForChild("HumanoidRootPart")
 
-        rootPart.Anchored = false
+        rootPart.Anchored = false -- Set to false if you do not want it to anchor
 
         local animation = Instance.new("Animation")
         animation.AnimationId = animationId
         local animationTrack = humanoid:LoadAnimation(animation)
-        animationTrack:Play()
-        animationTrack:AdjustSpeed(1)
+        animationTrack:Play() -- Plays the animation
+        animationTrack:AdjustSpeed(1) -- Set your desired animation speed
 
-        sound:Play()
+        sound:Play() -- Plays the tool sound
 
         -- Play effect when tool is used
         if effect then
-            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso")
+            local torso = character:FindFirstChild("Torso") or character:FindFirstChild("UpperTorso") -- R6 or R15 model
 
             if torso then
-                effect.Parent = torso
-                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1)
-                effectSound:Play()
+                effect.Parent = torso -- Attach the effect to the player's torso
+                effect.CFrame = torso.CFrame * CFrame.new(0, 32, -1) -- Position the effect
+                effectSound:Play() -- Play the effect sound
 
-                wait(60)
-                effect:Destroy()
+                wait(60) -- Wait for 60 seconds
+                effect:Destroy() -- Destroy the effect
             end
         end
 
@@ -97,10 +78,12 @@ end
 
 -- Reload the tool if it is destroyed
 local function reloadTool()
+    -- Wait for the tool to be destroyed or unequipped
     tool.AncestryChanged:Connect(function(_, parent)
         if not parent then
-            wait(0.5)
-            tool.Parent = game.Players.LocalPlayer.Backpack
+            -- Tool is removed from the player's Backpack (destroyed or unequipped)
+            wait(0.5)  -- Delay before reloading (to allow time for destruction)
+            tool.Parent = game.Players.LocalPlayer.Backpack -- Reload the tool
         end
     end)
 end
