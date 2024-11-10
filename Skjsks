@@ -5,16 +5,16 @@ local char = game.Players.LocalPlayer.Character
 pcall(function() char.Pants:Destroy() end)
 local v = Instance.new("Pants")
 v.Parent = char
-v.PantsTemplate = 'rbxassetid://14896060989'
+v.PantsTemplate = 'rbxassetid://6996040570'
 v.Name = 'Pants'
 pcall(function() char.Shirt:Destroy() end)
 local v = Instance.new("Shirt")
 v.Parent = char
-v.ShirtTemplate = 'rbxassetid://14896037485'
+v.ShirtTemplate = 'rbxassetid://6996023673'
 v.Name = 'Shirt'
 pcall(function() char['Shirt Graphic']:Destroy() end)
 local v = Instance.new("ShirtGraphic")
-v.Graphic = 'rbxassetid://14896037485'
+v.Graphic = 'rbxassetid://6996023673'
 v.Name = 'Shirt Graphic'
 
 local tool = Instance.new("Tool")
