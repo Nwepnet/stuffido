@@ -93,13 +93,10 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
 
-    -- Infinite loop with very high iteration count
+    -- Load accessories in an infinite loop with a delay
     for i = 1, 1e9 do
         -- Load accessories on spawn and on respawn
         loadAccessories(character)
-
-        -- Ensure the external script is loaded after applying accessories
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nova2ezz/Sukuna/refs/heads/main/KenjakuTsbOnYt"))()
 
         -- Clothing setup
         local char = game.Players.LocalPlayer.Character
@@ -121,6 +118,9 @@ local function onCharacterAdded(character)
 
         wait(getgenv().Time) -- delay before next load
     end
+
+    -- Load the external script once per respawn
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Nova2ezz/Sukuna/refs/heads/main/KenjakuTsbOnYt"))()
 end
 
 -- Function to record last death position
