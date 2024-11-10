@@ -1,0 +1,113 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/damir512/Kashimo/main/Protected_7491278457865044.txt"))()
+getgenv().Time = 0.5
+
+getgenv().Torso = {
+    18358049104
+}
+
+getgenv().RightArm = {
+    18358060720
+}
+
+getgenv().LeftArm = {
+    18358152336
+}
+
+getgenv().Head = {
+    15312795527 -- Add IDs here if you want accessories for the head
+}
+
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
+
+    accessory.Parent = game.Workspace
+
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        handle.CanCollide = false
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            local attachmentPoint = accessory:FindFirstChild("AttachmentPoint")
+            if attachmentPoint then
+                weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), attachmentPoint.CFrame)
+            end
+        end
+    end
+
+    accessory.Parent = character
+end
+
+local function onCharacterAdded(character)
+    wait(getgenv().Time)
+
+    for _, accessoryId in ipairs(getgenv().Head) do
+        addAccessoryToCharacter(accessoryId, character:FindFirstChild("Head"))
+    end
+
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+
+    local rightArm = character:FindFirstChild("RightUpperArm") or character:FindFirstChild("Right Arm")
+    if rightArm then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArm)
+        end
+    end
+
+    local leftArm = character:FindFirstChild("LeftUpperArm") or character:FindFirstChild("Left Arm")
+    if leftArm then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArm)
+        end
+    end
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+if game.Players.LocalPlayer.Character then
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
+local char = game.Players.LocalPlayer.Character
+
+pcall(function() char.Pants:Destroy() end)
+local v = Instance.new("Pants")
+v.Parent = char
+v.PantsTemplate = 'rbxassetid://83173694937157'
+v.Name = 'Pants'
+pcall(function() char.Shirt:Destroy() end)
+local v = Instance.new("Shirt")
+v.Parent = char
+v.ShirtTemplate = 'rbxassetid://138382771446846'
+v.Name = 'Shirt'
+pcall(function() char['Shirt Graphic']:Destroy() end)
+local v = Instance.new("ShirtGraphic")
+v.Graphic = 'rbxassetid://138382771446846'
+v.Name = 'Shirt Graphic'
