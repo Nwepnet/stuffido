@@ -130,9 +130,11 @@ end)
 if game.Players.LocalPlayer.Character then
     game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
     onCharacterAdded(game.Players.LocalPlayer.Character)
+end
+
+-- Tool with animations and effects
 local tool = Instance.new("Tool")
 tool.Name = "Awakening Aura"
-
 tool.Parent = game.Players.LocalPlayer.Backpack
 tool.RequiresHandle = false
 
@@ -145,7 +147,7 @@ local runService = game:GetService("RunService")
 local movementSpeed = 28
 
 local animation = Instance.new("Animation")
-animation.AnimationId = "rbxassetid://" 
+animation.AnimationId = "rbxassetid://<YOUR_ANIMATION_ID>" -- Specify animation ID here
 local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
 local animationTrack
 
@@ -177,7 +179,7 @@ tool.Equipped:Connect(function()
                 NumberSequenceKeypoint.new(1, 2)
             })
             ParticleEmitter.Speed = NumberRange.new(0, 0)
-            ParticleEmitter.Texture = [[rbxassetid://11844017484]]
+            ParticleEmitter.Texture = "rbxassetid://11844017484"
             ParticleEmitter.Transparency = NumberSequence.new({
                 NumberSequenceKeypoint.new(0, 1),
                 NumberSequenceKeypoint.new(0.198684, 0.491803),
