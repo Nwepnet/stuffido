@@ -4,10 +4,10 @@ getgenv().Torso = {
     13725666126
 }
 
-getgenv().LeftArm = {
+getgenv().RightArm = {
    18772894136
 }
-getgenv().RightArm = {
+getgenv().LeftArm = {
    18772884855
 }
 
