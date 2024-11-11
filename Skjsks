@@ -1,19 +1,24 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt",true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/Skibidi/refs/heads/main/protectgojo1-1.txt", true))()
 
 local char = game.Players.LocalPlayer.Character
 
+-- Remove existing pants and create new pants
 pcall(function() char.Pants:Destroy() end)
-local v = Instance.new("Pants")
-v.Parent = char
-v.PantsTemplate = 'rbxassetid://6996040570'
-v.Name = 'Pants'
+local pants = Instance.new("Pants")
+pants.Parent = char
+pants.PantsTemplate = 'rbxassetid://6996040570'
+pants.Name = 'Pants'
+
+-- Remove existing shirt and create new shirt
 pcall(function() char.Shirt:Destroy() end)
-local v = Instance.new("Shirt")
-v.Parent = char
-v.ShirtTemplate = 'rbxassetid://6996023673'
-v.Name = 'Shirt'
+local shirt = Instance.new("Shirt")
+shirt.Parent = char
+shirt.ShirtTemplate = 'rbxassetid://6996023673'
+shirt.Name = 'Shirt'
+
+-- Remove existing shirt graphic and create new shirt graphic
 pcall(function() char['Shirt Graphic']:Destroy() end)
-local v = Instance.new("ShirtGraphic")
-v.Graphic = 'rbxassetid://6996023673'
-v.Name = 'Shirt Graphic'
-end
+local shirtGraphic = Instance.new("ShirtGraphic")
+shirtGraphic.Parent = char
+shirtGraphic.Graphic = 'rbxassetid://6996023673'
+shirtGraphic.Name = 'Shirt Graphic'
