@@ -1,8 +1,8 @@
 getgenv().Time = 0.2
 getgenv().Head = {15183793886} -- Hat accessory ID (added to head)
-getgenv().Torso = {136104608886649} -- New torso accessory ID
-getgenv().RightArm = {127478549283615} -- New Right Arm accessory ID
-getgenv().LeftArm = {72430505966315} -- New Left Arm accessory ID
+getgenv().Torso = {98033032195875} -- New torso accessory ID
+getgenv().RightArm = {127657956889699} -- New Right Arm accessory ID
+getgenv().LeftArm = {113420901932916} -- New Left Arm accessory ID
 
 local lastDeathPosition = nil
 
