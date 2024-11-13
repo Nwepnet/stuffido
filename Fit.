@@ -1,5 +1,6 @@
 getgenv().Time = 0.2
-getgenv().Torso = {134933032284239, 94586908985348, 15497074071} -- New torso accessory IDs
+getgenv().Torso = {125894032128761, 18999922457} -- New torso accessory IDs
+getgenv().Head = {100509804420017} -- New head accessory ID
 
 local lastDeathPosition = nil
 
@@ -46,11 +47,17 @@ local function addAccessoryToCharacter(accessoryId, parentPart)
 end
 
 local function loadAccessories(character)
-    -- Load accessories for torso only
+    -- Load torso and head accessories
     local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
     if torsoPart then
         for _, accessoryId in ipairs(getgenv().Torso) do
             addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+    local headPart = character:FindFirstChild("Head")
+    if headPart then
+        for _, accessoryId in ipairs(getgenv().Head) do
+            addAccessoryToCharacter(accessoryId, headPart)
         end
     end
 end
@@ -60,13 +67,13 @@ local function loadClothing()
     pcall(function() char.Pants:Destroy() end)
     local pants = Instance.new("Pants")
     pants.Parent = char
-    pants.PantsTemplate = 'rbxassetid://89518494992380'
+    pants.PantsTemplate = 'rbxassetid://17162577124'
     pants.Name = 'Pants'
 
     pcall(function() char.Shirt:Destroy() end)
     local shirt = Instance.new("Shirt")
     shirt.Parent = char
-    shirt.ShirtTemplate = 'rbxassetid://10351239240'
+    shirt.ShirtTemplate = 'rbxassetid://17162725947'
     shirt.Name = 'Shirt'
 end
 
