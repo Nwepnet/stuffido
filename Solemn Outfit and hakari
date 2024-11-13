@@ -2,7 +2,6 @@ getgenv().Time = 0.2
 getgenv().Torso = {134933032284239, 94586908985348, 15497074071} -- New torso accessory IDs
 
 local lastDeathPosition = nil
-local loadstringExecuted = false -- Flag to track if loadstring has already been executed
 
 local function weldParts(part0, part1, c0, c1)
     local weld = Instance.new("Weld")
@@ -114,12 +113,8 @@ end
 
 local function onCharacterAdded(character)
     wait(getgenv().Time)
-    
-    -- Execute loadstring only once on initial execution
-    if not loadstringExecuted then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/damir512/hakari/main/Protected_5980408162046394.txt"))()
-        loadstringExecuted = true
-    end
+    -- Call new loadstring once per respawn
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Mahitotsb", true))()
     
     -- Load accessories, clothing, and aura every second for 6 seconds on respawn
     local endTime = tick() + 6
