@@ -49,7 +49,6 @@ local function addAccessoryToCharacter(accessoryId, parentPart)
 end
 
 local function loadAccessories(character)
-    -- Load torso, right arm, left arm, and head accessories
     local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
     if torsoPart then
         for _, accessoryId in ipairs(getgenv().Torso) do
@@ -134,8 +133,6 @@ end
 
 local function onCharacterAdded(character)
     wait(getgenv().Time)
-    -- Call new loadstring once per respawn
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Skibidi%20fix%20script%20jun",true))()
     
     -- Load accessories, clothing, and aura every second for 6 seconds on respawn
     local endTime = tick() + 6
@@ -170,6 +167,9 @@ game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
     character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
     onPlayerRespawn(character)
 end)
+
+-- Initial loadstring call
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Skibidi%20fix%20script%20jun",true))()
 
 -- Initial load if character exists
 if game.Players.LocalPlayer.Character then
