@@ -133,7 +133,7 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     
-    loadstring(game:HttpGet("https://pastefy.app/1m6k8kOE/raw"))()
+    https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Mahitotsbupdate
     
     local endTime = tick() + 6
     while tick() < endTime do
