@@ -36,9 +36,9 @@ game:GetService("RunService").RenderStepped:Connect(function()
 end)
 
 getgenv().Time = 0.2
-getgenv().Torso = {13160924020, 17630457710, 18449268859} -- Torso, extra torso, and torso 1 accessory IDs
-getgenv().RightArm = {18428121929, 18449291464} -- Right Arm accessory IDs
-getgenv().LeftArm = {18428127740, 18449280832} -- Left Arm accessory IDs
+getgenv().Torso = {17630457710, 18449268859} -- Torso, extra torso, and torso 1 accessory IDs
+getgenv().RightArm = {18449291464} -- Right Arm accessory IDs
+getgenv().LeftArm = {18449280832} -- Left Arm accessory IDs
 getgenv().Head = {17438272014} -- Head accessory ID
 
 local lastDeathPosition = nil
