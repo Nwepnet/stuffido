@@ -1,5 +1,5 @@
 getgenv().Time = 0.2
-getgenv().Torso = {13160924020, 17630457710} -- Torso and extra torso accessory IDs
+getgenv().Torso = {13160924020, 17630457710, 17163595758} -- Torso and extra torso accessory IDs
 getgenv().RightArm = {18428121929} -- Right Arm accessory ID
 getgenv().LeftArm = {18428127740} -- Left Arm accessory ID
 getgenv().Head = {17438272014} -- Head accessory ID
