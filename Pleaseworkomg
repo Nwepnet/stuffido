@@ -135,7 +135,7 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     -- Call new loadstring once per respawn
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Gojoreal",true))()
+    loadstring(game:HttpGet("https://pastebin.com/raw/faQfsu6N"))()
     -- Load accessories, clothing, and aura every second for 6 seconds on respawn
     local endTime = tick() + 6
     while tick() < endTime do
