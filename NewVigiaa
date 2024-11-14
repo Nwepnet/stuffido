@@ -135,8 +135,7 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     -- Call new loadstring once per respawn
-getgenv().morph = false
-loadstring(game:HttpGet("https://raw.githubusercontent.com/skibiditoiletfan2007/BaldyToSorcerer/refs/heads/main/LatestV2.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Gojoreal",true))()
     -- Load accessories, clothing, and aura every second for 6 seconds on respawn
     local endTime = tick() + 6
     while tick() < endTime do
