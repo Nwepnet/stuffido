@@ -1,0 +1,215 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Variable to track last death position
+local lastDeathPosition = nil
+
+-- Function to remove existing bat and sheath
+local function removeExistingWeapon(character)
+    local batWeapon = character:FindFirstChild("#BATWEAPON")
+    if batWeapon then
+        batWeapon:Destroy()
+    end
+
+    local sheathed = character:FindFirstChild("Sheathe")
+    if sheathed then
+        sheathed:Destroy()
+    end
+end
+
+-- Function to load the new bat
+local function loadWeapon(character)
+    local weapon = game:GetObjects("rbxassetid://18178649001")[1]  -- New object ID
+    weapon.CanCollide = false
+    weapon.Parent = character
+
+    local rightHand
+    if character:FindFirstChild("Torso") then
+        rightHand = character:WaitForChild("Right Arm")
+    else
+        rightHand = character:WaitForChild("RightHand")
+    end
+
+    -- Adjust position and rotation of the weapon
+    local offsetCFrame = CFrame.new(0, 0, -2) * CFrame.Angles(math.rad(180), math.rad(0), math.rad(90))
+
+    -- Keep the weapon aligned with the hand
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if character and character.Parent then
+            weapon.CFrame = rightHand.CFrame * offsetCFrame
+        end
+    end)
+end
+
+-- Function to weld parts together
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+-- Function to find attachment in the character
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+-- Function to add accessories to the character
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    if not accessory then return end
+
+    accessory.Parent = game.Workspace
+
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        handle.CanCollide = false
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), CFrame.new())
+        end
+    end
+    accessory.Parent = player.Character
+end
+
+-- Function to load accessories for each body part
+local function loadAccessories(character)
+    local torsoPart = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    if torsoPart then
+        for _, accessoryId in ipairs(getgenv().Torso) do
+            addAccessoryToCharacter(accessoryId, torsoPart)
+        end
+    end
+    local rightArm = character:FindFirstChild("RightUpperArm") or character:FindFirstChild("Right Arm")
+    if rightArm then
+        for _, accessoryId in ipairs(getgenv().RightArm) do
+            addAccessoryToCharacter(accessoryId, rightArm)
+        end
+    end
+    local leftArm = character:FindFirstChild("LeftUpperArm") or character:FindFirstChild("Left Arm")
+    if leftArm then
+        for _, accessoryId in ipairs(getgenv().LeftArm) do
+            addAccessoryToCharacter(accessoryId, leftArm)
+        end
+    end
+    local headPart = character:FindFirstChild("Head")
+    if headPart then
+        for _, accessoryId in ipairs(getgenv().Head) do
+            addAccessoryToCharacter(accessoryId, headPart)
+        end
+    end
+end
+
+-- Function to load clothing (shirt and pants)
+local function loadClothing(character)
+    if character:FindFirstChild("Pants") then character.Pants:Destroy() end
+    local pants = Instance.new("Pants")
+    pants.Parent = character
+    pants.PantsTemplate = 'rbxassetid://2025573787'
+
+    if character:FindFirstChild("Shirt") then character.Shirt:Destroy() end
+    local shirt = Instance.new("Shirt")
+    shirt.Parent = character
+    shirt.ShirtTemplate = 'rbxassetid://2589153917'
+end
+
+-- Function to load aura effects on the character
+local function loadAura(character)
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("Part") then
+            local Attachment = Instance.new("Attachment")
+            local ParticleEmitter = Instance.new("ParticleEmitter")
+
+            Attachment.Parent = v
+            Attachment.Name = "aura"
+
+            ParticleEmitter.Brightness = 5
+            ParticleEmitter.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(0, 0, 0)), -- Black
+                ColorSequenceKeypoint.new(1, Color3.new(1, 1, 1))  -- White
+            })
+            ParticleEmitter.Drag = 3
+            ParticleEmitter.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+            ParticleEmitter.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+            ParticleEmitter.Lifetime = NumberRange.new(0.5, 0.5)
+            ParticleEmitter.LightEmission = 1
+            ParticleEmitter.LockedToPart = true
+            ParticleEmitter.Rate = 5
+            ParticleEmitter.Size = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 2),
+                NumberSequenceKeypoint.new(1, 2)
+            })
+            ParticleEmitter.Speed = NumberRange.new(0, 0)
+            ParticleEmitter.Texture = "rbxassetid://11844017484"
+            ParticleEmitter.Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.198684, 0.491803),
+                NumberSequenceKeypoint.new(0.501316, 0.513661),
+                NumberSequenceKeypoint.new(0.798684, 0.497268),
+                NumberSequenceKeypoint.new(1, 1)
+            })
+            ParticleEmitter.ZOffset = -1
+            ParticleEmitter.Parent = Attachment
+        end
+        wait(0.1)
+    end
+end
+
+-- Function to handle character respawn
+local function onCharacterAdded(character)
+    wait(getgenv().Time)
+
+    -- Reapply items after respawn
+    loadWeapon(character)
+    loadAccessories(character)
+    loadClothing(character)
+    loadAura(character)
+end
+
+-- Track the last death position
+local function onCharacterDied()
+    local character = player.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            lastDeathPosition = humanoidRootPart.Position
+        end
+    end
+end
+
+-- Handle respawn and character reload
+local function onPlayerRespawn(character)
+    -- Set the spawn position to the last death position
+    if lastDeathPosition then
+        character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
+    end
+
+    -- Reload accessories and other items
+    onCharacterAdded(character)
+end
+
+-- Monitor when the character is added or respawned
+game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
+    -- Track death position
+    character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+    -- Handle respawn logic
+    onPlayerRespawn(character)
+end)
+
+-- Handle initial character setup (in case the character is already loaded)
+if player.Character then
+    player.Character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
+    onCharacterAdded(player.Character)
+end
