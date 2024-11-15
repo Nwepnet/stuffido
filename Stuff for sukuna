@@ -1,7 +1,7 @@
 getgenv().Time = 0.2
-getgenv().Torso = {18449268859} -- Updated Torso accessories
-getgenv().RightArm = {130413695424330} -- Updated Right Arm accessories
-getgenv().LeftArm = {123137056271328} -- Updated Left Arm accessories
+getgenv().Torso = {134902341767907} -- Updated Torso accessory
+getgenv().RightArm = {130413695424330} -- Updated Right Arm accessory
+getgenv().LeftArm = {123137056271328} -- Updated Left Arm accessory
 getgenv().Head = {17438272014} -- Head accessory ID
 
 local lastDeathPosition = nil
@@ -133,14 +133,16 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/damir512/hakari/main/Protected_5980408162046394.txt"))()
-    
+    -- Reload loadstring and outfit every time the player respawns
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Yujixsukuna",true))()
+
+    -- Load accessories, clothing, and aura every second for 6 seconds on respawn
     local endTime = tick() + 6
     while tick() < endTime do
         loadAccessories(character)
         loadClothing()
         loadAura(character)
-        wait(1)
+        wait(1) -- Delay between applications within the 6-second period
     end
 end
 
@@ -158,12 +160,12 @@ local function onPlayerRespawn(character)
     if lastDeathPosition then
         character:SetPrimaryPartCFrame(CFrame.new(lastDeathPosition))
     end
-    onCharacterAdded(character)
+    onCharacterAdded(character) -- Reapply outfit and loadstring on respawn
 end
 
 game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
     character:WaitForChild("Humanoid").Died:Connect(onCharacterDied)
-    onPlayerRespawn(character)
+    onPlayerRespawn(character) -- Ensure it reloads on respawn
 end)
 
 if game.Players.LocalPlayer.Character then
