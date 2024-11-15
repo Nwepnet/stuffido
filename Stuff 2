@@ -1,0 +1,6 @@
+-- Loadstring
+getgenv().Music = false 
+getgenv().AttackQuality = 'High'
+getgenv().ConstantSpeed = false
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/TSB/main/APOPHENIA.lua"))()
