@@ -134,7 +134,7 @@ end
 -- Weapon code integration
 local function loadWeapon(character)
     -- Remove any existing bat weapon and sheath
-    local batWeapon = character:FindFirstChild("#BATWEAPON")
+    local batWeapon = character:FindFirstChild("#NinjaKATANA")
     if batWeapon then
         batWeapon:Destroy()
     end
@@ -180,7 +180,7 @@ local function onCharacterAdded(character)
 
     -- Finally, load the loadstring after everything else (only once per execution)
     if not loadstringExecuted then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/stuffido/refs/heads/main/Stuff%202", true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/TSB/refs/heads/main/VOLTA.lua"))()
         loadstringExecuted = true
     end
 end
