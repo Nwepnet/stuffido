@@ -96,8 +96,7 @@ end
 local function onCharacterAdded(character)
     wait(getgenv().Time)
     -- Call loadstring once per respawn
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gokou300/Gokou300/refs/heads/main/SAITAMA_TO_SUKUNA_MY_BEST_MOVESET_TSB",true))()
-    
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/damir512/sukunaongarou/main/Protected_7222200088522532.txt",true))()
     -- Load accessories and clothing every second for 6 seconds on respawn
     local endTime = tick() + 6
     while tick() < endTime do
