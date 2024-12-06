@@ -544,3 +544,4 @@ local humanoid = character:WaitForChild("Humanoid")
 
 -- Connect animation played event
 humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+end
