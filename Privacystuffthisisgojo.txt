@@ -1,0 +1,1170 @@
+------------------------[[Activation]]-------------------------------
+local Characters = { --List of Characters to choose from
+	["1"] = "Limitless"; --Normal Placeholder used for normals tuff
+}
+
+--Set any character to nil if u dont want to equip
+getgenv().GCharacter = Characters["1"]
+
+------------------------[[Settings]]---------------------------------
+local QuoteOptions = {
+	["0"] = "Disabled"; --Means no quotes
+	["1"] = "Romanji"; --EXAMPLE: saying it outloud in chat bro
+}
+getgenv().GQuotesEnabled = QuoteOptions["1"]
+
+getgenv().GCustomAnims = true
+
+----------------------[[Actual stuff]]-------------------------------
+function lerp(a,b,t) return a + (b - a) * t end
+local tween = game.TweenService
+local function sendChatMessage(message)
+    local chatService = game:GetService("TextChatService")
+    local defaultChannel = chatService:FindFirstChild("TextChannels"):FindFirstChild("RBXGeneral") -- Default general channel
+    if defaultChannel then
+        defaultChannel:SendAsync(message) -- Send message to the general chat channel
+    else
+        warn("Default chat channel not found!")
+    end
+end
+
+function GetGitSoundID(GithubSnd,SoundName)
+	SoundName=tostring(SoundName)
+	local url=GithubSnd
+	SoundName=tostring(SoundName)
+	local url=GithubSnd
+	FileName = SoundName
+	writefile("customObject_Sound_"..FileName..".mp3", game:HttpGet(url))
+	return (getcustomasset or getsynasset)("customObject_Sound_"..FileName..".mp3")
+end
+
+function roundNumber(num, numDecimalPlaces)
+  return tonumber(string.format("%." .. (numDecimalPlaces or 0) .. "f", num))
+end
+
+function getsfxid(id)
+	local hi = nil
+	if id == "clang" then
+		hi = "rbxassetid://"..495135507
+	elseif id == "water" then
+		hi = GetGitSoundID("https://github.com/fartmaggot445/sounds/raw/refs/heads/main/thewater.mp3")
+	end
+	return tostring(hi)
+end
+print(getsfxid("pickup"))
+
+function sfx(id,p,d)
+	local SlashSound = Instance.new("Sound")
+	SlashSound.SoundId = id
+	SlashSound.Parent = p
+	SlashSound.Volume = .7
+	if d then
+		game.Debris:AddItem(SlashSound,15)
+	end
+	return SlashSound
+end
+
+function bubble(tex,p,off,Y)
+task.spawn(function()
+	local bill = Instance.new("BillboardGui",p)
+	bill.Size = UDim2.new(4,0,4,0)
+	bill.LightInfluence = 0
+	bill.SizeOffset = Vector2.new(off,Y)
+	bill.AlwaysOnTop = true
+	local holder = Instance.new("Frame",bill)
+	holder.Position = UDim2.new(.5,0,.5,0)
+	holder.AnchorPoint = Vector2.new(.5,.5)
+	holder.Size = UDim2.new(.7,0,1,0)
+	holder.BackgroundTransparency = 1
+	local bub = Instance.new("ImageLabel",holder)
+	bub.Position = UDim2.new(.5,0,.5,0)
+	bub.AnchorPoint = Vector2.new(.5,.5)
+	bub.Size = UDim2.new(1,0,1,0)
+	bub.BackgroundTransparency = 1
+	bub.Image = "rbxassetid://72404778312207"
+	bub.ZIndex = 1
+	local sign = Instance.new("Frame",holder)
+	sign.Position = UDim2.new(.5,0,.5,0)
+	sign.AnchorPoint = Vector2.new(.5,.5)
+	sign.Size = UDim2.new(.8,0,.7,0)
+	sign.BackgroundTransparency = 1
+	sign.ZIndex = 2
+	local dialogue = Instance.new("TextLabel",sign)
+	dialogue.Position = UDim2.new(0,0,0,0)
+	dialogue.AnchorPoint = Vector2.new(0,0)
+	dialogue.Size = UDim2.new(1,0,1,0)
+	dialogue.BackgroundTransparency = 1
+	dialogue.Text = tex
+	dialogue.TextScaled = true
+	dialogue.Font = Enum.Font.Kalam
+	dialogue.FontFace.Bold = true
+	
+	bill.StudsOffset = Vector3.new(0,1.5,0)
+	dialogue.TextTransparency = 1
+	bub.ImageTransparency = 1
+	tween:Create(dialogue,TweenInfo.new(.5),{TextTransparency = 0}):Play()
+	tween:Create(bub,TweenInfo.new(.5),{ImageTransparency = 0}):Play()
+	tween:Create(bill,TweenInfo.new(.5),{StudsOffset = Vector3.new(0,0,0)}):Play()
+	wait(1)
+	tween:Create(dialogue,TweenInfo.new(.5),{TextTransparency = 1}):Play()
+	tween:Create(bub,TweenInfo.new(.5),{ImageTransparency = 1}):Play()
+	tween:Create(bill,TweenInfo.new(.5),{StudsOffset = Vector3.new(0,-1.5,0)}):Play()
+	
+	game.Debris:AddItem(bill,1)
+end)
+end
+
+--[[getgenv().Used = false
+for i = 1,5 do 
+		pcall(function() getgenv().Died:Disconnect() end)
+		pcall(function() getgenv().UIS:Disconnect() end)
+		pcall(function() getgenv().NextRound:Disconnect() end)
+
+		--pcall(function() getgenv().Character = game.Players.LocalPlayer.Character end)
+	end]]
+	
+function mainthing()
+	--Actual moolah
+	sfx("rbxasset://sounds\\bass.wav",workspace,true):Play()
+	if getgenv().GUsed == true then print("USED")
+		game:GetService("StarterGui"):SetCore("SendNotification",{
+			Title = "Already executed!",
+			Text = "Reset.",
+			Icon = "rbxassetid://16770406745"
+		})
+		return
+	end
+	if getgenv().GCharacter == nil then
+		print("NONVAILAIBLE")
+		game:GetService("StarterGui"):SetCore("SendNotification",{
+			Title = "GET THE SETTINGS",
+			Text = "You cant use this without the freakin settings :(",
+			Icon = "rbxassetid://16770406745"
+		})
+		return
+	end
+	print("WOOOOOOO")
+
+	--------------------------------------------------------------------------------------
+
+	local plr = game.Players.LocalPlayer
+	local ch = plr.Character
+	local h = ch.Humanoid
+	local rt = ch.HumanoidRootPart
+	local pgui = plr.PlayerGui
+	local cam = workspace.CurrentCamera
+
+	local RunService = game:GetService("RunService")
+	local uis = game:GetService("UserInputService")
+	
+	for i = 1,5 do 
+		pcall(function() getgenv().GDied:Disconnect() end)
+		pcall(function() getgenv().GJUIS:Disconnect() end)
+		pcall(function() getgenv().infdie:Disconnect() end)
+		pcall(function() getgenv().infdie = nil end)
+		
+	end
+
+	--FE
+	local snap = 1482878249
+
+	function animstop()
+		for _, animTrack in pairs(h:GetPlayingAnimationTracks()) do
+			animTrack:Stop()
+		end
+	end
+	
+	local Noclipping = nil
+	Clip = true
+	local clips = {}
+	
+	function noclip()
+		Clip = true
+		for _, v in pairs(plr.Character:GetDescendants()) do
+			if v:IsA("BasePart") and v.CanCollide == true then
+				table.insert(clips,v)
+			end
+		end
+		Noclipping = RunService.Stepped:Connect(function()
+			if Clip and plr.Character then
+				for _, v in pairs(clips) do
+					v.CanCollide = false
+				end
+			end
+		end)
+	end
+
+	function clip()
+		if Noclipping then
+			Noclipping:Disconnect()
+		end
+		Clip = false
+		
+		for _, v in pairs(clips) do
+			if v:IsA("BasePart") then
+				v.CanCollide = true
+			end
+		end
+	end
+	
+	local OutputMode = 1
+	function outchange()
+	sfx("rbxassetid://5855425672",workspace,true)
+		OutputMode = OutputMode + 1
+		if getgenv().GCharacter == "Limitless" then
+		if OutputMode > 3 then
+			OutputMode = 1
+		end
+		
+		if OutputMode == 1 then
+			local hh = Instance.new("Highlight",ch)
+			hh.OutlineTransparency = 1
+			hh.FillTransparency = .5
+			hh.FillColor = Color3.new(1,0,0)
+			game.TweenService:Create(hh,TweenInfo.new(1),{FillTransparency = 1}):Play()
+			game.Debris:AddItem(hh,2)
+
+		elseif OutputMode == 2 then
+			local hh = Instance.new("Highlight",ch)
+			hh.OutlineTransparency = 1
+			hh.FillTransparency = .5
+			hh.FillColor = Color3.new(0,1,1)
+			game.TweenService:Create(hh,TweenInfo.new(1),{FillTransparency = 1}):Play()
+			game.Debris:AddItem(hh,2)
+		elseif OutputMode == 3 then
+			local hh = Instance.new("Highlight",ch)
+			hh.OutlineTransparency = 1
+			hh.FillTransparency = .5
+			hh.FillColor = Color3.new(1,1,1)
+			game.TweenService:Create(hh,TweenInfo.new(1),{FillTransparency = 1}):Play()
+			game.Debris:AddItem(hh,2)
+		end
+		end
+	end
+	local idlea = "http://www.roblox.com/asset/?id=180435571"
+			local idle2a = "http://www.roblox.com/asset/?id=180435792"
+			local walka = "http://www.roblox.com/asset/?id=180426354"
+			local runa = "http://www.roblox.com/asset/?id=180426354"
+			
+				local sate = "idle"
+				local tempanims = {}
+				local laststat = "idle"
+				local infinity = false
+				local collection = nil
+				local affectedobjs = {}
+	local adb = false
+	function Ability(typ)
+		if typ == "Placeholder" then
+			sate = "Busy"
+			task.spawn(function()
+				local forceful = sfx("rbxassetid://7486846874",workspace,true)
+				forceful.Volume = 5
+				forceful:Play()
+				forceful.TimePosition = 1
+			end)
+			
+			local m = plr:GetMouse()
+			rt.CFrame = m.Hit*CFrame.new(0,3,0)
+					
+			sate = "nil"
+		end
+		if typ == "Infinity" then
+    sfx("rbxassetid://5855425672", workspace, true)
+    infinity = not infinity
+    
+    if infinity then
+        local hh = Instance.new("Highlight", ch)
+        hh.OutlineTransparency = 1
+        hh.FillTransparency = 0.5
+        hh.FillColor = Color3.new(0.3, 1, 1)
+        game.TweenService:Create(hh, TweenInfo.new(1), {FillTransparency = 1}):Play()
+        game.Debris:AddItem(hh, 2)
+        
+        if not collection then
+            local voiceline = sfx("rbxassetid://7147847068", workspace, true)
+            voiceline.Volume = 1
+            voiceline:Play()
+            
+            local bas1 = sfx("rbxassetid://7390331288", workspace, true)
+            bas1.Volume = 1
+            bas1:Play()
+            
+            local bas2 = sfx("rbxassetid://9045206449", workspace, true)
+            bas2.Volume = 1
+            bas2:Play()
+            
+            collection = Instance.new("Part", workspace)
+            collection.Size = Vector3.new(1, 1, 1) * 35
+            collection.CanCollide = false
+            collection.Anchored = false
+            collection.Transparency = 1
+            collection.CastShadow = false
+            collection.CFrame = ch.HumanoidRootPart.CFrame
+            
+            local weld = Instance.new("Weld", collection)
+            weld.Part0 = ch.HumanoidRootPart
+            weld.Part1 = collection
+            
+            local touch = collection.Touched:Connect(function(v)
+                if infinity and v ~= collection then
+                    local humanoid = v.Parent:FindFirstChildOfClass("Humanoid")
+                    
+                    if humanoid and not game.Players:GetPlayerFromCharacter(v.Parent) then
+                        -- Slow down NPCs approaching Infinity
+                        local npcSpeed = humanoid.WalkSpeed
+                        local slowdown = game.TweenService:Create(humanoid, TweenInfo.new(1), {WalkSpeed = math.max(0, npcSpeed * 0.2)})
+                        slowdown:Play()
+                    elseif not humanoid and v.Anchored == false and not table.find(affectedobjs, v) and v.AssemblyLinearVelocity.Magnitude > 1 then
+                        -- Slow down and stop unanchored objects and projectiles
+                        local retain = v.AssemblyLinearVelocity
+                        local mag = v.AssemblyLinearVelocity.Magnitude
+                        
+                        local at = Instance.new("Attachment", v)
+                        local fly = Instance.new("AlignPosition", v)
+                        fly.Mode = Enum.PositionAlignmentMode.OneAttachment
+                        fly.MaxForce = 1e9
+                        fly.Position = v.Position
+                        fly.Attachment0 = at
+                        table.insert(affectedobjs, fly)
+                        
+                        repeat
+                            retain = retain / (mag / ((ch.HumanoidRootPart.Position - v.Position).Magnitude) / 0.8)
+                            if (v.Position - ch.HumanoidRootPart.Position).Magnitude < 8 then
+                                v.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                                game.TweenService:Create(v, TweenInfo.new(0.03), {CFrame = v.CFrame + ((v.Position - ch.HumanoidRootPart.Position).Unit * 1)}):Play()
+                                fly.Position = fly.Position + ((ch.HumanoidRootPart.Position - v.Position).Unit * -1)
+                            else
+                                fly.Position = fly.Position + retain
+                            end
+                            wait()
+                        until (v.Position - ch.HumanoidRootPart.Position).Magnitude > 35 or not collection or not collection.Parent or not v.Parent
+                        fly:Destroy()
+                    end
+                else
+                    collection:Destroy()
+                    collection = nil
+                    for _, obj in pairs(affectedobjs) do
+                        obj:Destroy()
+                    end
+                end
+            end)
+        end
+    else
+        if collection then
+            collection:Destroy()
+            collection = nil
+            local hh = Instance.new("Highlight", ch)
+            hh.OutlineTransparency = 1
+            hh.FillTransparency = 0.5
+            hh.FillColor = Color3.new(0.3, 1, 1)
+            game.TweenService:Create(hh, TweenInfo.new(1), {FillTransparency = 1}):Play()
+            game.Debris:AddItem(hh, 2)
+            
+            for _, obj in pairs(affectedobjs) do
+                obj:Destroy()
+            end
+        end
+    end
+end
+		if typ == "Ao" then
+			sate = "Busy"
+			task.spawn(function()
+				local forceful = sfx("rbxassetid://122261039674349",workspace,true)
+				forceful.Volume = 5
+				forceful:Play()
+				forceful.TimePosition = 0
+			end)
+			
+			task.spawn(function()
+			
+			end)
+			
+			task.spawn(function()
+				wait(.5)
+				local overlap = OverlapParams.new()
+				overlap.FilterType = Enum.RaycastFilterType.Exclude
+				overlap.FilterDescendantsInstances = {ch}
+				local box = workspace:GetPartBoundsInBox(ch.HumanoidRootPart.CFrame*CFrame.new(0,0,-(1000/2)),Vector3.new(5,5,1000),overlap)
+				local objects = {}
+				if box then
+					for i,v in pairs(box) do
+						if v ~= collection and not v.Parent:FindFirstChildOfClass("Humanoid") and v.Anchored == false and not table.find(objects,v) then
+							if not table.find(objects,object) then
+								local h = Instance.new("Highlight",v)
+								game.Debris:AddItem(h,2)
+								table.insert(objects,v)
+							end
+						end
+					end
+				end
+				
+				for i,obj in pairs(objects) do
+				print(obj)
+					local att0 = Instance.new("Attachment", obj)
+					att0.Name = "att0_" .. obj.Name
+					obj.CanCollide = true
+					obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*((rt.Position-obj.Position).Magnitude)
+					obj.AssemblyAngularVelocity = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(-10,10))
+					if (rt.Position-obj.Position).Magnitude < 7 or (rt.Position-obj.Position).Magnitude > 100 then
+						obj.CFrame = rt.CFrame*CFrame.new(0,0,-5+obj.Size.Magnitude)
+						--obj.CanCollide = false
+					else
+						task.spawn(function()
+							--obj.CanCollide = false
+							wait(1)
+							obj.CanCollide = true
+						end)
+					end
+				end
+				
+				sate = "nil"
+			end)
+			
+			task.spawn(function()
+				wait(.5)
+				tween:Create(cam,TweenInfo.new(.1,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{FieldOfView = 80}):Play()
+				wait(.1)
+				tween:Create(cam,TweenInfo.new(1),{FieldOfView = 70}):Play()
+			end)
+			
+		end
+		if typ == "Akarena" then
+			sate = "Busy"
+			
+			--[[if getgenv().GQuotesEnabled ~= nil then
+				if getgenv().GQuotesEnabled == "Romanji" then
+					sendChatMessage("Jujutsu Ki Hanten: Aka")
+				end
+			end]]
+			
+			--sfx("rbxassetid://4894428927",workspace,true):Play()
+			
+			task.spawn(function()
+				--[[bubble("『Jujutsu Ki Hante』",game.Players.LocalPlayer.Character.Head,-.7,.3)
+				wait(.7)
+				bubble("『Aka』",game.Players.LocalPlayer.Character.Head,.7,-.3)]]
+			end)
+			
+			task.spawn(function()
+				local forceful = sfx("rbxassetid://122261039674349",workspace,true)
+				forceful.Volume = 5
+				forceful:Play()
+				forceful.TimePosition = 0
+				
+				--[[local boowoowoo = sfx("rbxassetid://7652527370",workspace,true)
+				boowoowoo.Volume = 1
+				--boowoowoo:Play()
+				
+				--sfx("rbxassetid://123153781486797",workspace,true):Play()
+				--fastpull 127117086239111
+				
+				local kj = sfx("rbxassetid://76786040776528",workspace,true)
+				kj.Volume = 3
+				kj:Play()
+				
+				local gunchopper = sfx("rbxassetid://8737379396",workspace,true)
+				gunchopper.Volume = .5
+				gunchopper:Play()
+
+				local glitch = sfx("rbxassetid://3276835551",workspace,true)
+					glitch.Volume = 1
+					glitch:Play()
+				
+				wait(.5)
+				local voiceline = sfx("rbxassetid://114219438298857",workspace,true)
+				voiceline.Volume = 4
+				voiceline:Play()
+				local boom = sfx("rbxassetid://7390331288",workspace,true)
+				boom.Volume = 2]]
+				--boom:Play()
+			end)
+			
+			task.spawn(function()
+			--[[local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://1234567890112211"
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play()
+			
+			local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://"..2954124238
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play(.25)
+			Anim:AdjustSpeed(0)
+			Anim.TimePosition = 1.7
+			wait(1)
+			Anim:Stop()
+			
+			local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://"..2954124238
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play()
+			Anim.TimePosition = 1
+			Anim:AdjustSpeed(.3)]]
+			end)
+			
+			task.spawn(function()
+				wait(3)
+				local overlap = OverlapParams.new()
+				overlap.FilterType = Enum.RaycastFilterType.Exclude
+				overlap.FilterDescendantsInstances = {ch}
+				local box = workspace:GetPartBoundsInBox(ch.HumanoidRootPart.CFrame*CFrame.new(0,0,0),Vector3.new(150,150,150),overlap)
+				local objects = {}
+				if box then
+					for i,v in pairs(box) do
+						if v ~= collection and not v.Parent:FindFirstChildOfClass("Humanoid") and v.Anchored == false and not table.find(objects,v) then
+							if not table.find(objects,object) then
+								local h = Instance.new("Highlight",v)
+								game.Debris:AddItem(h,2)
+								table.insert(objects,v)
+							end
+						end
+					end
+				end
+				
+				for i,obj in pairs(objects) do
+				print(obj)
+					local att0 = Instance.new("Attachment", obj)
+					att0.Name = "att0_" .. obj.Name
+					obj.CanCollide = true
+					obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(150-((rt.Position-obj.Position).Magnitude/10)) +Vector3.new(0,150-((rt.Position-obj.Position).Magnitude/3),0)
+					obj.AssemblyAngularVelocity = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(-10,10))
+					if (rt.Position-obj.Position).Magnitude < 50 then
+						obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(500-((rt.Position-obj.Position).Magnitude/3)) +Vector3.new(0,100,0)
+						obj.CanCollide = false
+					else
+						task.spawn(function()
+							obj.CanCollide = false
+							wait(1)
+							obj.CanCollide = true
+						end)
+					end
+				end
+				
+				sate = "nil"
+			end)
+			
+			task.spawn(function()
+				tween:Create(cam,TweenInfo.new(3,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{FieldOfView = 80}):Play()
+				wait(3)
+				tween:Create(cam,TweenInfo.new(.5),{FieldOfView = 70}):Play()
+			end)
+				
+			sate = "nil"
+		end
+		if typ == "TP" then
+			sate = "Busy"
+				task.spawn(function()
+					local forceful = sfx("rbxassetid://7486846874",workspace,true)
+					forceful.Volume = 5
+					forceful:Play()
+					forceful.TimePosition = 1
+				end)
+				
+				local m = plr:GetMouse()
+				rt.CFrame = m.Hit*CFrame.new(0,3,0)
+				
+				sate = "nil"
+			
+		end
+		if typ == "Aka" then
+			sate = "Busy"
+			if h.FloorMaterial == Enum.Material.Air then
+				task.spawn(function()
+					bubble("『Tsugi』",game.Players.LocalPlayer.Character.Head,.7,.3)
+				end)
+				
+				--[[task.spawn(function()
+					local forceful = sfx("rbxassetid://9120704059",workspace,true)
+					forceful.Volume = 1
+					forceful:Play()
+					forceful.TimePosition = .5
+					
+					--[[local voiceline = sfx("rbxassetid://81701549952061",workspace,true)
+					voiceline.Volume = 3
+					voiceline:Play()
+					--85332400970010 woosbmm without the second swing
+					
+					local woosbmmm = sfx("rbxassetid://122261039674349",workspace,true)
+					woosbmmm.Volume = 2
+					woosbmmm:Play()
+
+					local glitch = sfx("rbxassetid://113811925246465",workspace,true)
+					glitch.Volume = 4
+					glitch:Play()
+					--sfx("rbxassetid://123153781486797",workspace,true):Play()
+					--fastpull 127117086239111
+				end)]]
+				
+				task.spawn(function()
+					local forceful = sfx("rbxassetid://9120704059",workspace,true)
+					forceful.Volume = 1
+					--forceful:Play()
+					forceful.TimePosition = .5
+					
+					local voiceline = sfx("rbxassetid://18710857673",workspace,true)
+					voiceline.Volume = 3
+					voiceline:Play()
+					voiceline.TimePosition = 1
+					--85332400970010 woosbmm without the second swing
+					
+					local woosbmmm = sfx("rbxassetid://122261039674349",workspace,true)
+					woosbmmm.Volume = 5
+					woosbmmm:Play()
+
+					local glitch = sfx("rbxassetid://3276835551",workspace,true)
+					glitch.Volume = 1
+					glitch:Play()
+					--sfx("rbxassetid://123153781486797",workspace,true):Play()
+					--fastpull 127117086239111
+
+					local gunchopper = sfx("rbxassetid://8737379396",workspace,true)
+					gunchopper.Volume = .5
+					gunchopper:Play()
+				end)
+				
+				task.spawn(function()
+					tween:Create(cam,TweenInfo.new(1,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{FieldOfView = 80}):Play()
+					wait(1)
+					tween:Create(cam,TweenInfo.new(.5),{FieldOfView = 70}):Play()
+				end)
+				
+				local AnimAnim = Instance.new("Animation")
+				AnimAnim.AnimationId = "rbxassetid://"..2954124238
+				local Anim = h.Animator:LoadAnimation(AnimAnim)
+				Anim.Priority = Enum.AnimationPriority.Action3
+				Anim:Play()
+				Anim.TimePosition = 1
+				Anim:AdjustSpeed(.5)
+				
+				local at = Instance.new("Attachment",rt)
+				local fly = Instance.new("AlignPosition",rt)
+				fly.Mode = Enum.PositionAlignmentMode.OneAttachment
+				fly.MaxForce = 1e9
+				fly.Position = rt.Position
+				fly.Attachment0 = at
+				--[[local align = Instance.new("AlignOrientation",rt)
+				align.MaxTorque = 1e9
+				align.AlignType = Enum.AlignType.PrimaryAxisParallel
+				align.Mode = Enum.OrientationAlignmentMode.OneAttachment
+				align.Attachment0 = at
+				align.MaxAngularVelocity = 1e9
+				align.RigidityEnabled = true]]
+				local align = Instance.new("BodyGyro",rt)
+				align.D = 500
+				align.MaxTorque = Vector3.new(1,1,1)*1e9
+				local look = CFrame.new(rt.Position,plr:GetMouse().Hit.Position)
+				align.CFrame = look-look.Position
+					
+				ch.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+				ch.Humanoid.AutoRotate = false
+				ch.Humanoid.PlatformStand = true
+					
+				tween:Create(fly,TweenInfo.new(1),{Position = rt.Position+(rt.Position-cam.CFrame.Position).Unit*-25}):Play()
+				
+				task.spawn(function()
+					local timer = os.clock()
+					repeat
+						local look = CFrame.new(rt.Position,plr:GetMouse().Hit.Position)
+						align.CFrame = look-look.Position
+						wait()
+					until timer-os.clock()>1
+				end)
+				
+				task.spawn(function()
+				wait(1)
+				local overlap = OverlapParams.new()
+				overlap.FilterType = Enum.RaycastFilterType.Exclude
+				overlap.FilterDescendantsInstances = {ch}
+				local box = workspace:GetPartBoundsInBox(ch.HumanoidRootPart.CFrame*CFrame.new(0,0,-(300/2)),Vector3.new(25,25,300),overlap)
+				local objects = {}
+				if box then
+					for i,v in pairs(box) do
+						if v ~= collection and not v.Parent:FindFirstChildOfClass("Humanoid") and v.Anchored == false and not table.find(objects,v) then
+							if not table.find(objects,object) then
+								local h = Instance.new("Highlight",v)
+								game.Debris:AddItem(h,2)
+								table.insert(objects,v)
+							end
+						end
+					end
+				end
+				
+				for i,obj in pairs(objects) do
+				print(obj)
+					local att0 = Instance.new("Attachment", obj)
+					att0.Name = "att0_" .. obj.Name
+					obj.CanCollide = true
+					obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(500-((rt.Position-obj.Position).Magnitude/10)) +Vector3.new(0,150-((rt.Position-obj.Position).Magnitude/3),0)
+					obj.AssemblyAngularVelocity = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(-10,10))
+					if (rt.Position-obj.Position).Magnitude < 20 then
+						obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(500-((rt.Position-obj.Position).Magnitude/3)) +Vector3.new(0,150,0)
+						obj.CanCollide = false
+					else
+						task.spawn(function()
+							obj.CanCollide = false
+							wait(1)
+							obj.CanCollide = true
+						end)
+					end
+				end
+			end)
+				
+				wait(1)
+				fly:Remove()
+				align:Remove()
+				ch.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+				ch.Humanoid.AutoRotate = true
+				ch.Humanoid.PlatformStand = false
+				
+				rt.AssemblyLinearVelocity = rt.CFrame.LookVector*-140
+				sate = "nil"
+			else
+			
+			--[[if getgenv().GQuotesEnabled ~= nil then
+				if getgenv().GQuotesEnabled == "Romanji" then
+					sendChatMessage("Jujutsu Ki Hanten: Aka")
+				end
+			end]]
+			
+			--sfx("rbxassetid://4894428927",workspace,true):Play()
+			
+			task.spawn(function()
+				--[[bubble("『Jujutsu Ki Hante』",game.Players.LocalPlayer.Character.Head,-.7,.3)
+				wait(.7)
+				bubble("『Aka』",game.Players.LocalPlayer.Character.Head,.7,-.3)]]
+			end)
+			task.spawn(function()
+			wait(.5)
+				bubble("『Jama da.』",game.Players.LocalPlayer.Character.Head,.7,.3)
+			end)
+			
+			--sfx("rbxassetid://9120704059",workspace,true):Play() --air
+			--[[task.spawn(function()
+				local forceful = sfx("rbxassetid://9120704059",workspace,true)
+				forceful.Volume = 1
+				forceful:Play()
+				forceful.TimePosition = .5
+				
+				local boowoowoo = sfx("rbxassetid://7652527370",workspace,true)
+				boowoowoo.Volume = 1
+				boowoowoo:Play()
+				
+				local voiceline = sfx("rbxassetid://8124825706",workspace,true)
+				voiceline.Volume = 1
+				--voiceline:Play()
+				--sfx("rbxassetid://123153781486797",workspace,true):Play()
+				--fastpull 127117086239111
+				
+				local kj = sfx("rbxassetid://376107250",workspace,true)
+				kj.Volume = .5
+				kj:Play()
+				
+				local gunchopper = sfx("rbxassetid://8737379396",workspace,true)
+				gunchopper.Volume = .5
+				gunchopper:Play()
+
+				wait(1)
+				local boom = sfx("rbxassetid://7390331288",workspace,true)
+				boom.Volume = 2
+				--boom:Play()
+			end)]]
+			task.spawn(function()
+				local forceful = sfx("rbxassetid://122261039674349",workspace,true)
+				forceful.Volume = 5
+				forceful:Play()
+				forceful.TimePosition = 0
+				
+				local boowoowoo = sfx("rbxassetid://7652527370",workspace,true)
+				boowoowoo.Volume = 1
+				--boowoowoo:Play()
+				
+				--sfx("rbxassetid://123153781486797",workspace,true):Play()
+				--fastpull 127117086239111
+				
+				local kj = sfx("rbxassetid://76786040776528",workspace,true)
+				kj.Volume = 3
+				kj:Play()
+				
+				local gunchopper = sfx("rbxassetid://8737379396",workspace,true)
+				gunchopper.Volume = .5
+				gunchopper:Play()
+
+				local glitch = sfx("rbxassetid://3276835551",workspace,true)
+					glitch.Volume = 1
+					glitch:Play()
+				
+				wait(.5)
+				local voiceline = sfx("rbxassetid://114219438298857",workspace,true)
+				voiceline.Volume = 4
+				voiceline:Play()
+				local boom = sfx("rbxassetid://7390331288",workspace,true)
+				boom.Volume = 2
+				--boom:Play()
+			end)
+			
+			task.spawn(function()
+			local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://1234567890112211"
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play()
+			
+			local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://"..2954124238
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play(.25)
+			Anim:AdjustSpeed(0)
+			Anim.TimePosition = 1.7
+			wait(1)
+			Anim:Stop()
+			
+			local AnimAnim = Instance.new("Animation")
+			AnimAnim.AnimationId = "rbxassetid://"..2954124238
+			local Anim = h.Animator:LoadAnimation(AnimAnim)
+			Anim.Priority = Enum.AnimationPriority.Action3
+			Anim:Play()
+			Anim.TimePosition = 1
+			Anim:AdjustSpeed(.3)
+			end)
+			
+			task.spawn(function()
+				wait(2)
+				local overlap = OverlapParams.new()
+				overlap.FilterType = Enum.RaycastFilterType.Exclude
+				overlap.FilterDescendantsInstances = {ch}
+				local box = workspace:GetPartBoundsInBox(ch.HumanoidRootPart.CFrame*CFrame.new(0,0,-(1000/2)),Vector3.new(5,5,1000),overlap)
+				local objects = {}
+				if box then
+					for i,v in pairs(box) do
+						if v ~= collection and not v.Parent:FindFirstChildOfClass("Humanoid") and v.Anchored == false and not table.find(objects,v) then
+							if not table.find(objects,object) then
+								local h = Instance.new("Highlight",v)
+								game.Debris:AddItem(h,2)
+								table.insert(objects,v)
+							end
+						end
+					end
+				end
+				
+				for i,obj in pairs(objects) do
+				print(obj)
+					local att0 = Instance.new("Attachment", obj)
+					att0.Name = "att0_" .. obj.Name
+					obj.CanCollide = true
+					obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(150-((rt.Position-obj.Position).Magnitude/10)) +Vector3.new(0,150-((rt.Position-obj.Position).Magnitude/3),0)
+					obj.AssemblyAngularVelocity = Vector3.new(math.random(-10,10),math.random(-10,10),math.random(-10,10))
+					if (rt.Position-obj.Position).Magnitude < 20 then
+						obj.AssemblyLinearVelocity = (rt.Position-obj.Position).Unit*-(500-((rt.Position-obj.Position).Magnitude/3)) +Vector3.new(0,100,0)
+						obj.CanCollide = false
+					else
+						task.spawn(function()
+							obj.CanCollide = false
+							wait(1)
+							obj.CanCollide = true
+						end)
+					end
+				end
+				
+				sate = "nil"
+			end)
+			
+			task.spawn(function()
+				tween:Create(cam,TweenInfo.new(2,Enum.EasingStyle.Cubic,Enum.EasingDirection.In),{FieldOfView = 80}):Play()
+				wait(2)
+				tween:Create(cam,TweenInfo.new(.5),{FieldOfView = 70}):Play()
+			end)
+			end--if air end
+			
+		end
+	end
+	
+----------------------------------------------------------------------------------------------
+
+	function getCharScript()
+		wait(.2)
+		local im = ch.Parent
+		sfx("rbxasset://sounds\\button.wav",workspace,true):Play()
+
+		if im.Name ~= nil then
+			if getgenv().GCharacter == "Limitless" then
+				
+				local run = false
+				local normal = h.WalkSpeed
+				
+				getgenv().GJUIS = uis.InputBegan:Connect(function(key,typ)
+					if typ then return end
+					
+				if OutputMode == 1 then
+					
+					if key.KeyCode == Enum.KeyCode.E then
+						adb = false
+						Ability("Aka")
+					end
+					
+					if key.KeyCode == Enum.KeyCode.R then
+						adb = false
+						Ability("Akarena")
+					end
+					
+					
+				elseif OutputMode == 2 then
+					
+					if key.KeyCode == Enum.KeyCode.E then
+						adb = false
+						Ability("Ao")
+					end
+					
+					if key.KeyCode == Enum.KeyCode.R then
+						adb = false
+						Ability("TP")
+					end
+					
+				end
+					
+					if key.KeyCode == Enum.KeyCode.C then
+						if run then
+							tween:Create(h,TweenInfo.new(.5),{WalkSpeed = normal}):Play()
+						else
+							tween:Create(h,TweenInfo.new(.5),{WalkSpeed = normal*7}):Play()
+						end
+						run = not run
+					end
+					if key.KeyCode == Enum.KeyCode.V then
+						outchange()
+					end
+					if key.KeyCode == Enum.KeyCode.B then
+						Ability("Infinity")
+					end
+				end)
+				
+			end--end of getgenvcharacter
+			
+			
+		end
+	end
+
+	----------------------------------------------------------------------------------------------
+
+	function start()
+		local im = ch.Parent
+		if im ~= nil then
+			if getgenv().GCharacter ~= nil then
+				task.spawn(function()
+				if true then
+					
+				getgenv().GUsed = true
+				game:GetService("StarterGui"):SetCore("SendNotification",{
+								Title = "Character Equipped",
+								Text = "Reset to unequip",
+								Icon = "rbxassetid://6993193859"
+							})
+					
+				ch.Archivable = true
+				
+				local died = false
+				function updh()
+					for i=1,5 do
+						pcall(function() getgenv().GDied:Disconnect() end)
+					end
+				end
+				updh()
+				
+				getCharScript()
+				
+				local runloop = game:GetService("RunService").Heartbeat:Connect(function()
+					--if not ready then return end
+					if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+						if sate ~= "Busy" then
+						if game.Players.LocalPlayer.Character.Humanoid.MoveDirection.Magnitude > 0 then
+							sate = "walk"
+						else
+							sate = "idle"
+						end
+						end
+					end
+					
+					if getgenv().GCustomAnims == true and laststat ~= sate and sate ~= "Busy" then
+						laststat = sate
+						print(laststat,sate)
+						for i,v in pairs(h.Animator:GetPlayingAnimationTracks()) do
+								if table.find(tempanims,v) then
+									v:Stop()
+								end
+							end
+						if sate == "idle" then
+							stopstat = true
+							for i,v in pairs(h.Animator:GetPlayingAnimationTracks()) do
+								if v.Animation.AnimationId == idlea or v.Animation.AnimationId == idle2a then
+									v:Stop()
+								end
+								if table.find(tempanims,v) then
+									v:Stop()
+								end
+							end
+							local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://28442712"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action
+								anim:Play(1)
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://74909500"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action
+								anim:Play(1)
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://73257515"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action2
+								anim:Play()
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://66331528"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action2
+								anim:Play(1)
+								anim.TimePosition = 3
+								anim:AdjustSpeed(0)
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://69427262"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action2
+								anim:Play(1)
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://97206298"--armmovement
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action2
+								anim:Play()
+								anim:AdjustSpeed()
+								table.insert(tempanims,anim)
+
+								local animanim = Instance.new("Animation")
+								animanim.AnimationId = "rbxassetid://94234491"
+								local anim = h:LoadAnimation(animanim)
+								anim.Priority = Enum.AnimationPriority.Action2
+								anim:Play(1)
+								anim:AdjustSpeed(0)
+								table.insert(tempanims,anim)
+							--[[for i,v in pairs(h.Animator:GetPlayingAnimationTracks()) do
+								table.insert(tempanims,v)
+							end]]
+						elseif sate == "walk" then
+							stopstat = true
+							for i,v in pairs(h.Animator:GetPlayingAnimationTracks()) do
+								if v.Animation.AnimationId == walka or v.Animation.AnimationId == runa then
+									v:Stop()
+								end
+								if table.find(tempanims,v) then
+									v:Stop()
+								end
+							end
+						end
+					end
+				end)
+				
+				getgenv().GDied = h.Died:Connect(function()
+						died = true
+						runloop:Disconnect()
+						game:GetService("StarterGui"):SetCore("SendNotification",{
+								Title = "Character Unequipped",
+								Text = "You can re-execute again!",
+								Icon = "rbxassetid://6993193859"
+							})
+							
+							getgenv().GUsed = false
+							
+							if collection then
+								collection:Remove()
+								collection = nil
+							end
+							for i,v in pairs(affectedobjs) do
+									v:Remove()
+								end
+							
+							for i=1,5 do
+								pcall(function() getgenv().infdie:Disconnect() end)
+								pcall(function() getgenv().infdie = nil end)
+								pcall(function() getgenv().GUsed = false end)
+								pcall(function() getgenv().GDied:Disconnect() end)
+								pcall(function() getgenv().GJUIS:Disconnect() end)
+							end
+				end)
+				
+				end
+				end)
+			end
+		end--end of im
+	end
+	start()
+	
+end--mainthing end
+mainthing()
+
+--mainthing()
+local uis = game:GetService("UserInputService")
+local players = game:GetService("Players")
+local starterGui = game:GetService("StarterGui")
+
+local plr = players.LocalPlayer
+local screenGui = Instance.new("ScreenGui", plr:WaitForChild("PlayerGui"))
+screenGui.Name = "MobileSupportUI"
+
+-- Create buttons for mobile controls
+local function createButton(name, text, position, size, action)
+    local button = Instance.new("TextButton", screenGui)
+    button.Name = name
+    button.Text = text
+    button.Position = UDim2.new(position.X.Scale, position.X.Offset, position.Y.Scale, position.Y.Offset)
+    button.Size = UDim2.new(size.X.Scale, size.X.Offset, size.Y.Scale, size.Y.Offset)
+    button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.TextScaled = true
+    button.MouseButton1Click:Connect(action)
+end
+
+-- Actions for the buttons
+local function onAbilityAka()
+    Ability("Aka")
+end
+
+local function onAbilityAkarena()
+    Ability("Akarena")
+end
+
+local function onInfinityToggle()
+    Ability("Infinity")
+end
+
+local function onOutputChange()
+    outchange()
+end
+
+if uis.TouchEnabled then
+    -- Add mobile-friendly buttons
+    createButton("AbilityAka", "Aka", UDim2.new(0.1, 0, 0.8, 0), UDim2.new(0.2, 0, 0.1, 0), onAbilityAka)
+    createButton("AbilityAkarena", "Akarena", UDim2.new(0.35, 0, 0.8, 0), UDim2.new(0.2, 0, 0.1, 0), onAbilityAkarena)
+    createButton("InfinityToggle", "Infinity", UDim2.new(0.6, 0, 0.8, 0), UDim2.new(0.2, 0, 0.1, 0), onInfinityToggle)
+    createButton("OutputChange", "Change Mode", UDim2.new(0.1, 0, 0.7, 0), UDim2.new(0.2, 0, 0.1, 0), onOutputChange)
+
+    starterGui:SetCore("SendNotification", {
+        Title = "Mobile Support Enabled",
+        Text = "Touch controls are active!",
+    })
+else
+    starterGui:SetCore("SendNotification", {
+        Title = "Mobile Support Disabled",
+        Text = "Using keyboard/mouse controls.",
+    })
+end
